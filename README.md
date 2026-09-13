@@ -382,11 +382,9 @@ Focused on developing strong foundations in **software engineering, quantitative
 
 ## Contribution Activity
 
-<div align="center">
+## Contribution Activity
 
-<img width="95%" src="https://github-readme-activity-graph.vercel.app/graph?username=ApexYashX&bg_color=0D1117&color=A78BFA&line=7C3AED&point=8B5CF6&area=true&hide_border=true&custom_title=Contribution%20Activity"/>
-
-</div>
+[![Yash's GitHub Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=ApexYashX&theme=github-compact)](https://github.com/ApexYashX)
 
 ---
 
