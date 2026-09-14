@@ -23,8 +23,14 @@ jobs:
 
       - name: Download Activity Graph
         run: |
-          curl -L "https://github-readme-activity-graph-pq1l.vercel.app/graph?username=ApexYashX" \
-          -o activity-graph.svg
+          curl -fL --retry 3 \
+            "https://github-readme-activity-graph-pq1l.vercel.app/graph?username=ApexYashX" \
+            -o activity-graph.svg
+
+      - name: Check SVG
+        run: |
+          head -c 200 activity-graph.svg
+          echo
 
       - name: Commit Graph
         run: |
