@@ -1,0 +1,260 @@
+name: Generate Contribution Calendar
+
+on:
+  schedule:
+    - cron: "30 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate contribution calendar
+        env:
+          SNAKE_TOKEN: ${{ secrets.SNAKE_TOKEN }}
+        run: |
+          python3 <<'PY'
+          import os
+          import json
+          import urllib.request
+          from datetime import date, timedelta
+
+          TOKEN = os.environ["SNAKE_TOKEN"]
+          USERNAME = "ApexYashX"
+
+          today = date.today()
+          start = today - timedelta(days=364)
+
+          contribution_data = {}
+
+          def get_contributions(from_date, to_date):
+              query = """
+              query($login: String!, $from: DateTime!, $to: DateTime!) {
+                user(login: $login) {
+                  contributionsCollection(from: $from, to: $to) {
+                    contributionCalendar {
+                      totalContributions
+                      weeks {
+                        contributionDays {
+                          date
+                          contributionCount
+                          color
+                          weekday
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              """
+
+              payload = json.dumps({
+                  "query": query,
+                  "variables": {
+                      "login": USERNAME,
+                      "from": from_date.isoformat() + "T00:00:00Z",
+                      "to": to_date.isoformat() + "T23:59:59Z"
+                  }
+              }).encode()
+
+              request = urllib.request.Request(
+                  "https://api.github.com/graphql",
+                  data=payload,
+                  headers={
+                      "Authorization": "Bearer " + TOKEN,
+                      "Content-Type": "application/json",
+                      "User-Agent": "ApexYashX-Contribution-Calendar"
+                  }
+              )
+
+              with urllib.request.urlopen(request) as response:
+                  result = json.loads(response.read().decode())
+
+              if "errors" in result:
+                  raise RuntimeError(json.dumps(result["errors"]))
+
+              calendar = result["data"]["user"]["contributionsCollection"]["contributionCalendar"]
+
+              for week in calendar["weeks"]:
+                  for day in week["contributionDays"]:
+                      contribution_data[day["date"]] = {
+                          "count": day["contributionCount"],
+                          "color": day["color"]
+                      }
+
+          # GitHub's contributionCalendar can be large,
+          # so fetch the year in smaller chunks.
+          current = start
+
+          while current <= today:
+              chunk_end = min(current + timedelta(days=89), today)
+              get_contributions(current, chunk_end)
+              current = chunk_end + timedelta(days=1)
+
+          # Sunday-based calendar layout
+          grid_start = start - timedelta(days=(start.weekday() + 1) % 7)
+          end_sunday_index = (today.weekday() + 1) % 7
+          grid_end = today + timedelta(days=6 - end_sunday_index)
+
+          total_days = (grid_end - grid_start).days + 1
+          weeks = total_days // 7
+
+          cell = 12
+          gap = 3
+          step = cell + gap
+
+          left = 45
+          top = 35
+
+          width = left + weeks * step + 10
+          height = top + 7 * step + 30
+
+          svg = []
+
+          svg.append(
+              f'<svg xmlns="http://www.w3.org/2000/svg" '
+              f'viewBox="0 0 {width} {height}" '
+              f'width="100%" role="img">'
+          )
+
+          svg.append(
+              '<title>GitHub contribution calendar for ApexYashX</title>'
+          )
+
+          # Background
+          svg.append(
+              f'<rect width="{width}" height="{height}" fill="white" rx="8"/>'
+          )
+
+          # Month labels
+          shown_months = set()
+
+          current = grid_start
+
+          while current <= grid_end:
+              if current.day <= 7:
+                  week_index = (current - grid_start).days // 7
+                  key = (current.year, current.month)
+
+                  if key not in shown_months:
+                      x = left + week_index * step
+                      month_name = current.strftime("%b")
+
+                      svg.append(
+                          f'<text x="{x}" y="18" '
+                          f'font-family="Arial, sans-serif" '
+                          f'font-size="10" fill="#57606a">'
+                          f'{month_name}</text>'
+                      )
+
+                      shown_months.add(key)
+
+              current += timedelta(days=1)
+
+          # Weekday labels
+          weekday_labels = {
+              1: "Mon",
+              3: "Wed",
+              5: "Fri"
+          }
+
+          for row, label in weekday_labels.items():
+              y = top + row * step + 9
+
+              svg.append(
+                  f'<text x="0" y="{y}" '
+                  f'font-family="Arial, sans-serif" '
+                  f'font-size="9" fill="#57606a">'
+                  f'{label}</text>'
+              )
+
+          # Contribution cells
+          current = grid_start
+
+          while current <= grid_end:
+              day_string = current.isoformat()
+
+              week_index = (current - grid_start).days // 7
+              row = (current.weekday() + 1) % 7
+
+              x = left + week_index * step
+              y = top + row * step
+
+              info = contribution_data.get(
+                  day_string,
+                  {"count": 0, "color": "#ebedf0"}
+              )
+
+              count = info["count"]
+              color = info["color"] if count > 0 else "#ebedf0"
+
+              svg.append(
+                  f'<rect x="{x}" y="{y}" '
+                  f'width="{cell}" height="{cell}" '
+                  f'rx="2" fill="{color}">'
+                  f'<title>{day_string}: {count} contributions</title>'
+                  f'</rect>'
+              )
+
+              current += timedelta(days=1)
+
+          # Total contribution count
+          total = sum(
+              contribution_data.get(
+                  (start + timedelta(days=i)).isoformat(),
+                  {"count": 0}
+              )["count"]
+              for i in range(365)
+          )
+
+          svg.append(
+              f'<text x="{left}" y="{height - 8}" '
+              f'font-family="Arial, sans-serif" '
+              f'font-size="11" fill="#57606a">'
+              f'{total} contributions in the last year'
+              f'</text>'
+          )
+
+          svg.append("</svg>")
+
+          os.makedirs("dist", exist_ok=True)
+
+          with open(
+              "dist/contribution-calendar.svg",
+              "w",
+              encoding="utf-8"
+          ) as f:
+              f.write("\n".join(svg))
+
+          print("Contribution calendar generated successfully.")
+          print("Total contributions:", total)
+          PY
+
+      - name: Update output branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git clone \
+            --branch output \
+            --single-branch \
+            https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git \
+            output-branch
+
+          cp dist/contribution-calendar.svg \
+            output-branch/contribution-calendar.svg
+
+          cd output-branch
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add contribution-calendar.svg
+
+          git diff --cached --quiet || \
+            git commit -m "Update contribution calendar"
+
+          git push origin output
