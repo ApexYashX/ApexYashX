@@ -39,7 +39,7 @@ jobs:
       - name: Download Activity Graph
         run: |
           curl -fL --retry 3 \
-            "https://github-readme-activity-graph-pq1l.vercel.app/graph?username=ApexYashX" \
+            "https://github-readme-activity-graph.vercel.app/graph?username=ApexYashX" \
             -o activity-graph.svg
 
       - name: Commit Activity Graph
