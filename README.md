@@ -379,10 +379,9 @@ Focused on developing strong foundations in **software engineering, quantitative
 </div>
 
 ---
-
 ## 📈 Contribution Activity
 
-[![GitHub Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=ApexYashX&theme=github)](https://github.com/ApexYashX)
+[![Yash's GitHub Activity Graph](https://github-readme-activity-graph-pq1l.vercel.app/graph?username=ApexYashX&theme=github)](https://github.com/ApexYashX)
 
 ---
 
