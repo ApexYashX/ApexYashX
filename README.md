@@ -384,6 +384,17 @@ Focused on developing strong foundations in **software engineering, quantitative
 [![Yash's GitHub Activity Graph](https://github-readme-activity-graph-pql1.vercel.app/graph?username=ApexYashX&theme=github-compact)](https://github.com/ApexYashX)
 
 ---
+---
+
+## 📅 My Contribution Calendar
+
+<p align="center">
+  <img
+    src="https://raw.githubusercontent.com/ApexYashX/ApexYashX/output/contribution-calendar.svg"
+    alt="ApexYashX Contribution Calendar"
+    width="100%"
+  />
+</p>
 
 ## 🐍 Contribution Snake
 
