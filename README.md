@@ -381,26 +381,17 @@ Focused on developing strong foundations in **software engineering, quantitative
 ---
 ## 📈 Contribution Activity
 
-[![Yash's GitHub Activity Graph](https://github-readme-activity-graph-mu-ruby.vercel.app/graph?username=ApexYashX&theme=github-compact)](https://github.com/ApexYashX)
+[![Yash's GitHub Activity Graph](https://github-readme-activity-graph-pql1.vercel.app/graph?username=ApexYashX&theme=github-compact)](https://github.com/ApexYashX)
+
 ---
 
-## Contribution Snake
+## 🐍 Contribution Snake
 
 <picture>
-  <source media="(prefers-color-scheme: dark)"
-    srcset="https://raw.githubusercontent.com/ApexYashX/ApexYashX/output/github-snake-dark.svg">
-
-  <source media="(prefers-color-scheme: light)"
-    srcset="https://raw.githubusercontent.com/ApexYashX/ApexYashX/output/github-snake.svg">
-
-  <img alt="GitHub Contribution Snake"
-    src="https://raw.githubusercontent.com/ApexYashX/ApexYashX/output/github-snake.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/ApexYashX/ApexYashX/output/github-snake-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/ApexYashX/ApexYashX/output/github-snake.svg">
+  <img alt="GitHub Contribution Snake" src="https://raw.githubusercontent.com/ApexYashX/ApexYashX/output/github-snake.svg">
 </picture>
-
-<div align="center">
-
-<img src="https://raw.githubusercontent.com/ApexYashX/ApexYashX/output/github-contribution-grid-snake-dark.svg" alt="GitHub Contribution Snake"/>
-
 </div>
 
 ---
