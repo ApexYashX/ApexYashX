@@ -1,4 +1,4 @@
-name: Update Activity Graph
+name: Activity Graph
 
 on:
   push:
