@@ -381,7 +381,7 @@ Focused on developing strong foundations in **software engineering, quantitative
 ---
 ## 📈 Contribution Activity
 
-<img src="https://github-readme-activity-graph-pq1l.vercel.app/graph?username=ApexYashX&v=123" alt="Yash's GitHub Activity Graph" width="100%">
+![Yash's GitHub Activity Graph](https://raw.githubusercontent.com/ApexYashX/ApexYashX/output/activity-graph.svg)
 ---
 
 ## Contribution Snake
